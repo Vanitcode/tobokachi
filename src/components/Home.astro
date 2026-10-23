@@ -1,0 +1,35 @@
+---
+// La portada completa en un idioma. Cada idioma tiene su archivo en src/pages
+// (index.astro, es/index.astro…) que solo dice qué idioma usar.
+import Base from '../layouts/Base.astro';
+import Masthead from './Masthead.astro';
+import Hero from './Hero.astro';
+import StudySheet from './StudySheet.astro';
+import HowItWorks from './HowItWorks.astro';
+import WhyPaper from './WhyPaper.astro';
+import Features from './Features.astro';
+import Faq from './Faq.astro';
+import Footer from './Footer.astro';
+import { getTexts, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = getTexts(lang);
+const route = '';
+---
+
+<Base title={t.meta.title} description={t.meta.description} lang={lang} route={route}>
+  <Masthead t={t.masthead} lang={lang} route={route} />
+  <main>
+    <Hero t={t.hero}>
+      <StudySheet t={t.sheet} />
+    </Hero>
+    <HowItWorks t={t.how} />
+    <WhyPaper t={t.why} />
+    <Features t={t.features} />
+    <Faq t={t.faq} lang={lang} />
+  </main>
+  <Footer t={t.footer} lang={lang} route={route} />
+</Base>

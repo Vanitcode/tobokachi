@@ -1,0 +1,72 @@
+---
+// «Why paper»: tres razones y la foto real de una hoja en una tablet e-ink.
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import einkPhoto from '../assets/photos/eink-tablet.jpg';
+
+interface Props {
+  t: {
+    label: string;
+    title: string;
+    points: { title: string; text: string }[];
+    photoAlt: string;
+    caption: string;
+  };
+}
+const { t } = Astro.props;
+---
+
+<section class="why" id="why">
+  <div class="wrap grid">
+    <div>
+      <SectionHead number={3} label={t.label} title={t.title} />
+      <ol class="points">
+        {t.points.map((p, i) => (
+          <li>
+            <span class="n mono">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <figure>
+      <div class="print">
+        <Image
+          src={einkPhoto}
+          alt={t.photoAlt}
+          widths={[480, 760, 1100]}
+          sizes="(max-width: 980px) 92vw, 520px"
+          loading="lazy"
+        />
+      </div>
+      <figcaption class="mono">{t.caption}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .why { border-top: 2px solid var(--ink); padding: 96px 0 104px; }
+  .grid { display: grid; grid-template-columns: 6fr 5fr; gap: 80px; align-items: center; }
+
+  .points { list-style: none; border-top: 1.5px solid var(--ink); margin-top: -24px; }
+  .points li { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 22px 0; border-bottom: 1px solid var(--rule); }
+  .n { font-weight: 700; font-size: 12px; color: var(--graphite); padding-top: 7px; }
+  h3 { font-family: var(--serif); font-weight: 700; font-size: 23px; line-height: 1.2; margin-bottom: 6px; }
+  .points p { font-size: 17px; line-height: 1.55; color: var(--text); max-width: 34em; }
+
+  /* La foto, como una copia impresa apoyada en la mesa */
+  .print {
+    background: #fff; padding: 12px; transform: rotate(1.6deg);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 24px 50px -20px rgba(20, 20, 20, 0.35);
+  }
+  .print :global(img) { width: 100%; height: auto; }
+  figcaption { margin-top: 22px; font-size: 12px; color: var(--graphite); }
+
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: 1fr; gap: 56px; }
+    figure { max-width: 520px; }
+  }
+</style>

@@ -1,0 +1,41 @@
+# Publica la web en GitHub Pages cada vez que se sube algo a la rama main.
+# También se puede lanzar a mano desde la pestaña Actions del repositorio.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permisos mínimos: leer el código y publicar en Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si se suben dos cambios seguidos, solo se publica el último
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Build with Astro
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,78 @@
+/* ── Tokens del estilo «Hoja de estudio» ───────────────────────────────────
+   Salen del PDF que genera la app: papel blanco, tinta negra, pautas grises
+   y los tres bolis con los que se corrige la hoja. */
+:root {
+  --desk: #ECECE8;      /* fondo: un escritorio gris neutro */
+  --paper: #FFFFFF;
+  --ink: #141414;
+  --graphite: #5B5B57;  /* texto secundario */
+  --text: #3A3A37;      /* texto de párrafos */
+  --rule: #CFCFCA;      /* pautas y separadores suaves */
+  --dash: #888888;      /* línea discontinua de las tarjetas */
+  --pen-blue: #2457D6;
+  --pen-green: #1E9E5A;
+  --pen-red: #E0412F;
+
+  /* Las variables --font-* las define Astro (astro.config.mjs → fonts) */
+  --serif: var(--font-serif);
+  --sans: var(--font-sans);
+  --mono: var(--font-mono);
+
+  --radius: 6px;        /* el mismo radio que las tarjetas del PDF */
+  --max: 1200px;
+  --gutter: 24px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.mono { font-family: var(--mono); }
+
+/* Etiqueta pequeña en mayúsculas, como «LANGUAGE» o «DECK» en el PDF */
+.label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+/* Solo para lectores de pantalla */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+:focus-visible { outline: 2px solid var(--pen-blue); outline-offset: 3px; }
+
+/* Modo captura (#static): sin animaciones ni transiciones */
+[data-static] *, [data-static] *::before, [data-static] *::after {
+  animation-duration: 0s !important; animation-delay: 0s !important; transition: none !important;
+}
+
+/* ── Japonés ─────────────────────────────────────────────────────────────
+   Las fuentes latinas no tienen kanji, así que el navegador usa las del sistema
+   (Hiragino Mincho y Hiragino Sans en Apple). Ajustamos lo que no encaja. */
+:lang(ja) { word-break: auto-phrase; line-break: strict; }
+:lang(ja) h1, :lang(ja) h2, :lang(ja) h3 { letter-spacing: 0.02em; }
+:lang(ja) h1 { line-height: 1.18; }
+:lang(ja) h2 { line-height: 1.22; }
+/* El japonés no tiene cursiva: la falsa inclinación queda mal */
+:lang(ja) em, :lang(ja) i, :lang(ja) .legend { font-style: normal; }

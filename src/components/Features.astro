@@ -1,0 +1,36 @@
+---
+// «Inside the app»: un índice impreso, con reglas en vez de tarjetas.
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  t: { label: string; title: string; items: { title: string; text: string }[] };
+}
+const { t } = Astro.props;
+---
+
+<section class="features" id="features">
+  <div class="wrap">
+    <SectionHead number={4} label={t.label} title={t.title} />
+    <ol class="index">
+      {t.items.map((item, i) => (
+        <li>
+          <span class="n mono">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .features { background: var(--paper); border-top: 2px solid var(--ink); padding: 96px 0 104px; }
+  .index { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 40px; row-gap: 8px; }
+  li { border-top: 1.5px solid var(--ink); padding: 16px 0 30px; }
+  .n { display: block; font-weight: 700; font-size: 12px; color: var(--graphite); margin-bottom: 18px; }
+  h3 { font-family: var(--serif); font-weight: 700; font-size: 24px; line-height: 1.15; margin-bottom: 8px; }
+  p { font-size: 16px; line-height: 1.55; color: var(--text); max-width: 26em; }
+
+  @media (max-width: 900px) { .index { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .index { grid-template-columns: 1fr; } li { padding-bottom: 22px; } }
+</style>

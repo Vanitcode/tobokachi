@@ -1,0 +1,73 @@
+---
+// Cabecera de la web con el mismo lenguaje que la cabecera del PDF:
+// etiquetas pequeñas en mayúsculas, valores en negrita y una regla negra de 2 px.
+import { Image } from 'astro:assets';
+import AppStoreButton from './AppStoreButton.astro';
+import appIcon from '../assets/app-icon.png';
+import { LANGS, localizedPath, navHref, type Lang } from '../i18n';
+import type { Texts } from '../i18n/en';
+
+interface Props {
+  t: Texts['masthead'];
+  lang: Lang;
+  /** Página actual sin idioma, para que el selector lleve a la misma página en otro idioma */
+  route: string;
+}
+
+const { t, lang, route } = Astro.props;
+---
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="row">
+      <a class="brand" href={localizedPath(lang)}>
+        <Image class="icon" src={appIcon} alt="" width={64} height={64} loading="eager" />
+        <span class="wordmark">Tobokachi</span>
+      </a>
+      <dl class="facts">
+        {t.facts.map((f) => (
+          <div>
+            <dt class="label">{f.label}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <nav class="links" aria-label="Main">
+        {t.nav.map((n) => <a href={navHref(lang, n.href)}>{n.label}</a>)}
+      </nav>
+      <nav class="langs" aria-label={t.language}>
+        {LANGS.map((l) => (
+          <a href={localizedPath(l, route)} hreflang={l} lang={l} aria-current={l === lang ? 'page' : undefined}>
+            {l}
+          </a>
+        ))}
+      </nav>
+      <AppStoreButton label={t.cta} small />
+    </div>
+    <hr />
+  </div>
+</header>
+
+<style>
+  .masthead { padding-top: 22px; }
+  .row { display: flex; align-items: flex-end; gap: 32px; padding-bottom: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; text-decoration: none; }
+  .brand :global(.icon) { width: 32px; height: 32px; }
+  .wordmark { font-family: var(--serif); font-weight: 700; font-size: 26px; letter-spacing: -0.01em; line-height: 1; }
+  .facts { display: flex; gap: 32px; }
+  .facts div { text-align: right; }
+  .facts dd { font-size: 14px; font-weight: 700; margin-top: 2px; }
+  nav { display: flex; gap: 20px; }
+  nav a {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+    text-decoration: none; color: var(--graphite);
+  }
+  nav a:hover { color: var(--ink); }
+  .langs { gap: 10px; }
+  .langs a[aria-current] { color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-color: var(--pen-blue); text-underline-offset: 4px; }
+  hr { height: 2px; border: 0; background: var(--ink); }
+
+  @media (max-width: 1180px) { .facts { display: none; } }
+  @media (max-width: 760px) { .links { display: none; } }
+  @media (max-width: 520px) { .langs { display: none; } }
+</style>

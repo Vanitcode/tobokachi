@@ -1,0 +1,155 @@
+---
+// «How it works»: cinco tarjetas como las del PDF. Cada una se marca con un ✓ real de la hoja
+// al llegar con el scroll. En la última, las caras enseñan cuándo volvería la tarjeta (FSRS-5 real).
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { nextIntervals } from '../lib/fsrs';
+import check1 from '../assets/marks/check-1.png';
+import check2 from '../assets/marks/check-2.png';
+import check3 from '../assets/marks/check-3.png';
+import check4 from '../assets/marks/check-4.png';
+import check5 from '../assets/marks/check-5.png';
+import circleGreen from '../assets/marks/circle-green.png';
+import circleRed from '../assets/marks/circle-red.png';
+import type { Texts } from '../i18n/en';
+
+interface Props {
+  t: Texts['how'];
+}
+const { t } = Astro.props;
+
+const checks = [check1, check2, check3, check4, check5];
+// Ejemplo: una tarjeta con estabilidad 10 días y dificultad 5, vista hace 10 días → [2, 16, 34, 81]
+const days = nextIntervals(10, 5, 10);
+const faces = ['🫠', '🤔', '😌', '🤩'];
+const circles = [circleRed, circleRed, circleGreen, circleGreen];
+// La frase de cada cara se monta aquí, al compilar: «Perfect → back on your sheet in 81 days.»
+const ratings = faces.map((face, i) => {
+  const when = (days[i] === 1 ? t.rate.one : t.rate.other).replace('{n}', String(days[i]));
+  const sentence = t.rate.sentence
+    .replace('{name}', `<b>${t.rate.names[i]}</b>`)
+    .replace('{when}', `<b>${when}</b>`);
+  return { face, circle: circles[i], name: t.rate.names[i], sentence };
+});
+---
+
+<section class="how" id="how">
+  <div class="wrap">
+    <SectionHead number={2} label={t.label} title={t.title} intro={t.intro} />
+    <ol class="steps">
+      {t.steps.map((step, i) => (
+        <li class="step" style={`--delay: ${0.15 + i * 0.18}s`}>
+          <span class="n">{String(i + 1).padStart(2, '0')}</span>
+          <Image class="tick" src={checks[i]} alt="" height={116} />
+          <h3>{step.title}</h3>
+          {i < t.steps.length - 1 ? (
+            <p class="lines">{step.text}</p>
+          ) : (
+            <div class="rating" data-rating>
+              <div class="faces">
+                {ratings.map((r) => (
+                  <button type="button" aria-label={r.name} data-sentence={r.sentence}>
+                    {r.face}
+                    <Image class="circle" src={r.circle} alt="" height={92} />
+                  </button>
+                ))}
+              </div>
+              <p class="readout mono" data-readout aria-live="polite">
+                {t.rate.hint}
+              </p>
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  const isStatic = document.documentElement.hasAttribute('data-static');
+
+  // Los ✓ se marcan cuando cada tarjeta entra en pantalla
+  for (const step of document.querySelectorAll<HTMLElement>('.how .step')) {
+    if (isStatic) {
+      step.classList.add('done');
+      continue;
+    }
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (entries[0].isIntersecting) {
+          step.classList.add('done');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.6 },
+    ).observe(step);
+  }
+
+  // Paso 05: al pasar el ratón o tocar una cara, se rodea a mano y se dice cuándo vuelve
+  for (const rating of document.querySelectorAll<HTMLElement>('[data-rating]')) {
+    const readout = rating.querySelector<HTMLElement>('[data-readout]')!;
+    const buttons = rating.querySelectorAll<HTMLButtonElement>('button');
+    for (const button of buttons) {
+      const show = () => {
+        buttons.forEach((b) => b.classList.toggle('on', b === button));
+        readout.innerHTML = button.dataset.sentence ?? '';
+      };
+      button.addEventListener('mouseenter', show);
+      button.addEventListener('focus', show);
+      button.addEventListener('click', show);
+    }
+  }
+</script>
+
+<style>
+  .how { background: var(--paper); border-top: 2px solid var(--ink); padding: 88px 0 100px; }
+  .steps { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+
+  .step {
+    position: relative; display: flex; flex-direction: column; min-height: 270px;
+    background: #fff; border: 1.5px solid var(--ink); border-radius: var(--radius);
+  }
+  .n { position: absolute; top: 9px; left: 10px; font-family: var(--mono); font-weight: 700; font-size: 12px; color: #595959; }
+  h3 {
+    font-family: var(--serif); font-weight: 700; font-size: 22px; line-height: 1.1; text-align: center;
+    padding: 44px 14px 22px;
+    background: repeating-linear-gradient(90deg, var(--dash) 0 5px, transparent 0 10px) bottom / 100% 1px no-repeat;
+  }
+  /* El texto va escrito sobre las pautas, como en la zona de respuesta de la tarjeta */
+  .lines {
+    flex: 1; padding: 4px 14px 16px; font-size: 15px; line-height: 30px; color: var(--text);
+    background: repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px) 0 4px;
+  }
+
+  /* El ✓ se «traza» desde abajo a la izquierda */
+  .step :global(.tick) {
+    position: absolute; top: -30px; left: 52%; height: 58px; width: auto;
+    clip-path: inset(100% 100% 0 0);
+    transition: clip-path 0.45s cubic-bezier(0.45, 0.05, 0.35, 1) var(--delay);
+  }
+  .step:global(.done) :global(.tick) { clip-path: inset(0 0 0 0); }
+
+  .rating { display: flex; flex-direction: column; flex: 1; }
+  .faces { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--rule); }
+  .faces button { position: relative; height: 48px; border: 0; background: none; font-size: 20px; cursor: pointer; }
+  .faces button + button { border-left: 1px solid #ccc; }
+  .faces :global(.circle) {
+    position: absolute; inset: 3px 6px; width: calc(100% - 12px); height: calc(100% - 6px); object-fit: contain;
+    opacity: 0; clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.35s ease, opacity 0s 0.35s;
+  }
+  .faces button:global(.on) :global(.circle) { opacity: 1; clip-path: inset(0 0 0 0); transition: clip-path 0.35s ease, opacity 0s; }
+  .readout { flex: 1; padding: 12px; font-size: 12px; line-height: 1.5; color: var(--graphite); }
+  .readout :global(b) { color: var(--ink); }
+
+  @media (max-width: 1100px) { .steps { grid-template-columns: repeat(3, 1fr); row-gap: 48px; } }
+  @media (max-width: 760px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) {
+    .steps { grid-template-columns: 1fr; }
+    .step { min-height: 0; }
+    .lines { min-height: 96px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step :global(.tick) { clip-path: none; transition: none; }
+  }
+</style>

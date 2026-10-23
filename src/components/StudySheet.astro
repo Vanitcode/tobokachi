@@ -1,0 +1,194 @@
+---
+// Réplica en HTML de la hoja PDF que genera la app, con la letra real del desarrollador
+// escribiéndose sola encima. Todo se mide en puntos de PDF: 1 pt = 100cqw / 595,28,
+// así que la hoja escala con su contenedor sin perder la geometría.
+import { getImage } from 'astro:assets';
+import { sheet, PAGE, CARD } from '../data/sheet';
+import inkBlueSrc from '../assets/ink/ink-blue.png';
+import inkGreenSrc from '../assets/ink/ink-green.png';
+import inkRedSrc from '../assets/ink/ink-red.png';
+
+interface Props {
+  t: { ariaLabel: string; caption: string; replay: string };
+}
+const { t } = Astro.props;
+
+// Las capas de tinta (PNG transparentes del tamaño de la hoja) se convierten a WebP al compilar
+const [inkBlue, inkGreen, inkRed] = await Promise.all(
+  [inkBlueSrc, inkGreenSrc, inkRedSrc].map((src) => getImage({ src, format: 'webp', quality: 85 })),
+);
+const inks = [
+  { pen: 'blue', url: inkBlue.src },
+  { pen: 'green', url: inkGreen.src },
+  { pen: 'red', url: inkRed.src },
+];
+
+const pt = (v: number) => `calc(${v} * var(--pt))`;
+
+const cards = sheet.prompts.map((html, i) => {
+  const col = i % 3;
+  const row = Math.floor(i / 3);
+  const x = CARD.left + col * CARD.pitchX;
+  const y = CARD.top + row * CARD.pitchY;
+  // Ventana de tinta: el trozo de cada capa que cae sobre esta tarjeta (incluye el ✓ de encima)
+  const win = { x: x - 5, y: y - 24, w: CARD.width + 10, h: CARD.height + 28 };
+  // Orden de la animación: primero la respuesta en azul, luego ✓ y correcciones
+  const start = 0.35 + i * 0.45;
+  return { html, number: String(i + 1).padStart(2, '0'), x, y, win, start };
+});
+const timing = { blue: [0, 0.9], green: [0.75, 0.45], red: [0.75, 0.6] } as const;
+---
+
+<figure class="sheet-fig" data-sheet>
+  <div class="sheet" role="img" aria-label={t.ariaLabel}>
+    <div class="page" style={`--ink-w: ${pt(PAGE.width)}; --ink-h: ${pt(PAGE.visibleHeight)}`}>
+      <div class="title">Tobokachi App</div>
+      <div class="pmeta">
+        <div><small>Language</small><b>{sheet.language}</b></div>
+        <div><small>Date</small><b>{sheet.date}</b></div>
+        <div><small>Flashcards</small><b>{sheet.flashcards}</b></div>
+        <div><small>Deck</small><b set:html={sheet.deck} /></div>
+      </div>
+      <div class="prule"></div>
+
+      {cards.map((c) => (
+        <div class="pcard" style={`left: ${pt(c.x - 0.75)}; top: ${pt(c.y - 0.75)}`}>
+          <span class="n">{c.number}</span>
+          <div class="w" set:html={c.html} />
+          <div class="dash" />
+          <div class="ln" style={`top: ${pt(84)}`} />
+          <div class="ln" style={`top: ${pt(96)}`} />
+          <div class="rate"><span>🫠</span><span>🤔</span><span>😌</span><span>🤩</span></div>
+        </div>
+      ))}
+
+      {cards.map((c) =>
+        inks.map(({ pen, url }) => (
+          <div
+            class={`ink ${pen}`}
+            style={`left: ${pt(c.win.x)}; top: ${pt(c.win.y)}; width: ${pt(c.win.w)}; height: ${pt(c.win.h)};
+              background-image: url(${url}); background-position: ${pt(-c.win.x)} ${pt(-c.win.y)};
+              --delay: ${c.start + timing[pen as keyof typeof timing][0]}s; --dur: ${timing[pen as keyof typeof timing][1]}s`}
+          />
+        )),
+      )}
+    </div>
+  </div>
+  <figcaption>
+    <span>{t.caption}</span>
+    <button type="button" class="replay" data-replay>{t.replay}</button>
+  </figcaption>
+</figure>
+
+<script>
+  // La animación empieza cuando la hoja entra en pantalla; «Replay» la repite.
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-sheet]')) {
+    if (document.documentElement.hasAttribute('data-static')) {
+      fig.classList.add('play');
+      continue;
+    }
+    const play = () => {
+      fig.classList.remove('play');
+      void fig.offsetWidth; // fuerza al navegador a "olvidar" el estado anterior
+      fig.classList.add('play');
+    };
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (entries[0].isIntersecting) {
+          play();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    ).observe(fig);
+    fig.querySelector('[data-replay]')?.addEventListener('click', play);
+  }
+</script>
+
+<style>
+  .sheet {
+    container-type: inline-size; position: relative;
+    aspect-ratio: 595.28 / 612; background: var(--paper);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 24px 50px -18px rgba(20, 20, 20, 0.28);
+    transform: rotate(-1.2deg);
+    -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+  }
+  .page { position: absolute; inset: 0; --pt: calc(100cqw / 595.28); font-family: var(--serif); color: #000; }
+
+  /* Cabecera de la hoja */
+  .title {
+    position: absolute; top: calc(27 * var(--pt)); left: 0; right: 0;
+    text-align: center; font-weight: 700; font-size: calc(20 * var(--pt));
+  }
+  .pmeta {
+    position: absolute; left: calc(28 * var(--pt)); right: calc(28 * var(--pt)); top: calc(76 * var(--pt));
+    display: flex; justify-content: space-between; align-items: flex-end; font-family: var(--sans);
+  }
+  .pmeta div { text-align: right; }
+  .pmeta div:first-child { text-align: left; }
+  .pmeta small {
+    display: block; font-size: calc(8 * var(--pt)); font-weight: 600; letter-spacing: 0.1em;
+    color: #595959; text-transform: uppercase;
+  }
+  .pmeta b { display: block; font-size: calc(11.5 * var(--pt)); line-height: 1.2; }
+  .prule {
+    position: absolute; left: calc(28 * var(--pt)); right: calc(28 * var(--pt)); top: calc(121 * var(--pt));
+    height: calc(2 * var(--pt)); background: #000;
+  }
+
+  /* Tarjetas: misma estructura que en el PDF (72 pt de palabra, 36 de respuesta, 22 de valoración) */
+  .pcard {
+    position: absolute; width: calc(174.59 * var(--pt)); height: calc(131.5 * var(--pt));
+    border: calc(1.5 * var(--pt)) solid #000; border-radius: calc(6 * var(--pt)); background: #fff; overflow: hidden;
+  }
+  .n {
+    position: absolute; top: calc(5 * var(--pt)); left: calc(5 * var(--pt));
+    font-family: var(--mono); font-weight: 700; font-size: calc(9 * var(--pt)); color: #595959;
+  }
+  .w {
+    position: absolute; top: 0; left: 0; right: 0; height: calc(72 * var(--pt));
+    display: grid; place-items: center; text-align: center; text-wrap: balance;
+    padding: calc(10 * var(--pt)) calc(5 * var(--pt)) 0;
+    font-weight: 700; font-size: calc(12.5 * var(--pt)); line-height: 1.12; letter-spacing: -0.01em;
+  }
+  .dash {
+    position: absolute; left: 0; right: 0; top: calc(72 * var(--pt)); height: calc(1 * var(--pt));
+    background: repeating-linear-gradient(90deg, var(--dash) 0 calc(4 * var(--pt)), transparent 0 calc(8 * var(--pt)));
+  }
+  .ln { position: absolute; left: 0; right: 0; height: calc(1 * var(--pt)); background: #999; }
+  .rate {
+    position: absolute; left: 0; right: 0; top: calc(108 * var(--pt)); height: calc(22 * var(--pt));
+    border-top: calc(1 * var(--pt)) solid var(--dash); display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .rate span { display: grid; place-items: center; font-size: calc(9.5 * var(--pt)); }
+  .rate span + span { border-left: 1px solid #ccc; }
+
+  /* Tinta: cada ventana se descubre de izquierda a derecha, como si se escribiera.
+     Los ✓ verdes aparecen desde abajo a la izquierda, que es como se trazan. */
+  .ink {
+    position: absolute; pointer-events: none; background-repeat: no-repeat;
+    background-size: var(--ink-w) var(--ink-h);
+    clip-path: inset(0 100% 0 0);
+  }
+  .ink.green { clip-path: inset(100% 100% 0 0); }
+  .play .ink {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path var(--dur) cubic-bezier(0.45, 0.05, 0.35, 1) var(--delay);
+  }
+
+  figcaption {
+    display: flex; justify-content: space-between; gap: 16px; margin-top: 18px;
+    font-family: var(--mono); font-size: 12px; color: var(--graphite);
+  }
+  .replay {
+    align-self: flex-start; white-space: nowrap; cursor: pointer;
+    background: none; border: 0; border-bottom: 1px solid currentColor; padding: 0;
+    font-family: var(--mono); font-size: 12px; color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ink { clip-path: inset(0 0 0 0) !important; transition: none !important; }
+    .replay { display: none; }
+  }
+</style>
