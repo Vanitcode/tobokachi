@@ -1,0 +1,52 @@
+# Tobokachi
+
+> Free spaced-repetition flashcard app for iPhone and iPad that turns your daily reviews into a printable PDF. You study vocabulary with a pen on paper, with Apple Pencil on an iPad, or on an e-ink tablet, then rate each card in the app and the FSRS algorithm schedules the next review.
+
+Tobokachi is a language-learning flashcard app built around one idea: spaced repetition, on paper. You collect words on your phone, turn them into cards (a word and its translation), and every day, at the study time you choose, the app builds a sheet with only the cards that are due. You answer them by hand, rate how well you remembered each one, and tomorrow's sheet adapts.
+
+## How it works
+
+1. Save words: from any app with the Share button (Safari, a reader, etc.), or right inside Tobokachi.
+2. Make cards: a word and its translation, sorted into decks by topic.
+3. Get the sheet: at your study time, FSRS picks the cards due today and lays them out on a printable A4 PDF.
+4. Write: on paper, with Apple Pencil, or on an e-ink tablet. No screen, no notifications.
+5. Rate it: back in the app, rate each card (I don't remember, difficult, good, perfect). FSRS uses the rating to decide when the card comes back.
+
+## Why paper
+
+- Recall, not recognition: writing a word forces you to retrieve it from memory; picking from a list only asks you to recognise it.
+- No distractions: a sheet of paper has no notifications, streaks or other apps.
+- A visible record: doubts, crossed-out words and corrections show what you really know.
+
+## Features
+
+- 22 languages to learn, including English, Spanish, German, French, Italian, Portuguese, Japanese, Chinese and Korean
+- Learning goals with your level and daily limits for new cards and reviews
+- Decks by topic (irregular verbs, phrasal verbs, kanji, grammar…)
+- FSRS (Free Spaced Repetition Scheduler), the modern open-source algorithm also available in Anki
+- Printable PDF sheets with room to write, for any printer, iPad or e-ink tablet (reMarkable, Kindle Scribe, Boox, Kobo or any device that can open and annotate a PDF)
+- Daily reminder when the day's sheet is ready
+- Share extension to save text from any app
+- CSV import and export, to bring cards from another flashcard app or take them with you
+- iCloud sync between iPhone and iPad
+- Private by design: no account, no ads, no tracking; cards stay on your devices and in your own iCloud
+
+## Price and platform
+
+- Free. No subscription, no in-app purchases, no ads, no account.
+- iPhone and iPad (iOS / iPadOS), on the App Store. No Android version.
+
+## Good fit for
+
+- Language learners who prefer writing by hand to tapping on a screen
+- Owners of e-ink tablets or iPad with Apple Pencil who want a daily vocabulary routine
+- Anki users who want FSRS scheduling with a paper-based study session
+- Students preparing vocabulary for exams (A1–C2)
+
+## Links
+
+- Website: https://vanitcode.github.io/tobokachi/
+- App Store: https://apps.apple.com/app/id6801584392
+- Support: https://vanitcode.github.io/tobokachi/support/
+- Privacy policy: https://vanitcode.github.io/tobokachi/privacy/
+- Contact: vanitcode@icloud.com
