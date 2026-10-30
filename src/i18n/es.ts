@@ -81,6 +81,7 @@ const es: Texts = {
   features: {
     label: 'Dentro de la app',
     title: 'Todo para un<br><em>hábito diario en papel.</em>',
+    note: 'Escribe la traducción de cada palabra en las páginas siguientes y luego valora cada tarjeta en la app.',
     items: [
       { title: '22 idiomas', text: 'Objetivos con tu nivel y un límite diario de tarjetas nuevas y repasos.' },
       { title: 'Mazos por tema', text: 'Verbos irregulares, phrasal verbs, kanji, gramática: un mazo para cada cosa que estés trabajando.' },

@@ -1,5 +1,6 @@
 ---
-// Encabezado de sección: «§ 02 — How it works», titular en serif y entradilla opcional.
+// Encabezado de sección: titular en serif y entradilla opcional. Sin rótulo encima del titular:
+// `number` y `label` se siguen recibiendo, pero ya no se pintan.
 interface Props {
   number: number;
   label: string;
@@ -12,7 +13,6 @@ const { number, label, title, intro } = Astro.props;
 
 <div class:list={['head', { solo: !intro }]}>
   <div>
-    <p class="mono label-row">§ {String(number).padStart(2, '0')} — {label}</p>
     <h2 set:html={title} />
   </div>
   {intro && <p class="intro">{intro}</p>}
@@ -21,8 +21,9 @@ const { number, label, title, intro } = Astro.props;
 <style>
   .head { display: grid; grid-template-columns: 5fr 6fr; gap: 64px; align-items: end; margin-bottom: 64px; }
   .solo { grid-template-columns: 1fr; }
-  .label-row { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); margin-bottom: 14px; }
-  h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 5vw, 60px); line-height: 1; letter-spacing: -0.03em; }
+  h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(38px, 5vw, 60px); line-height: 1; letter-spacing: -0.025em; text-wrap: balance; }
+  /* La segunda línea va en el gris de las etiquetas del PDF, sin cursiva */
+  h2 :global(em) { font-style: normal; color: var(--graphite); }
   .intro { font-size: 18px; line-height: 1.55; color: var(--text); max-width: 34em; }
   @media (max-width: 980px) { .head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; } }
 </style>

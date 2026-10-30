@@ -81,6 +81,7 @@ const de: Texts = {
   features: {
     label: 'In der App',
     title: 'Alles für eine<br><em>tägliche Papier-Routine.</em>',
+    note: 'Schreib auf den folgenden Seiten die Übersetzung jedes Wortes und bewerte danach jede Karte in der App.',
     items: [
       { title: '22 Sprachen', text: 'Lernziele mit deinem Niveau und einem Tageslimit für neue Karten und Wiederholungen.' },
       { title: 'Stapel nach Thema', text: 'Unregelmäßige Verben, Modalpartikeln, Kanji, Grammatik: ein Stapel für alles, woran du gerade arbeitest.' },

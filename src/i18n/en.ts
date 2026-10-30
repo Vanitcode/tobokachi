@@ -85,6 +85,8 @@ const en = {
   features: {
     label: 'Inside the app',
     title: 'Everything for a<br><em>daily paper habit.</em>',
+    // El pie de la portada de sesión del PDF, copiado tal cual del catálogo de la app
+    note: 'Write the translation of each word on the next pages, then rate every card in the app.',
     items: [
       { title: '22 languages', text: 'Learning goals with your level and a daily limit for new cards and reviews.' },
       { title: 'Decks by topic', text: 'Irregular verbs, phrasal verbs, kanji, grammar: one deck for each thing you are working on.' },

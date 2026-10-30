@@ -23,7 +23,7 @@ const route = '';
 <Base title={t.meta.title} description={t.meta.description} lang={lang} route={route}>
   <Masthead t={t.masthead} lang={lang} route={route} />
   <main>
-    <Hero t={t.hero}>
+    <Hero t={t.hero} ratings={t.how.rate.names}>
       <StudySheet t={t.sheet} />
     </Hero>
     <HowItWorks t={t.how} />

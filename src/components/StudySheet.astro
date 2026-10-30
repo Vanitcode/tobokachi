@@ -72,6 +72,11 @@ const timing = { blue: [0, 0.9], green: [0.75, 0.45], red: [0.75, 0.6] } as cons
           />
         )),
       )}
+
+      <div class="pfoot">
+        <i>🫠 · I don't remember · 🤔 · difficult · 😌 · good · 🤩 · perfect</i>
+        <b>Page 1 / 2</b>
+      </div>
     </div>
   </div>
   <figcaption>
@@ -108,11 +113,9 @@ const timing = { blue: [0, 0.9], green: [0.75, 0.45], red: [0.75, 0.6] } as cons
 <style>
   .sheet {
     container-type: inline-size; position: relative;
-    aspect-ratio: 595.28 / 612; background: var(--paper);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 24px 50px -18px rgba(20, 20, 20, 0.28);
-    transform: rotate(-1.2deg);
-    -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+    /* La parte de la hoja con las tarjetas (612 pt) más el pie de página del PDF (40 pt) */
+    aspect-ratio: 595.28 / 652; background: var(--paper);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 22px 44px -16px rgba(0, 0, 0, 0.3);
   }
   .page { position: absolute; inset: 0; --pt: calc(100cqw / 595.28); font-family: var(--serif); color: #000; }
 
@@ -164,6 +167,15 @@ const timing = { blue: [0, 0.9], green: [0.75, 0.45], red: [0.75, 0.6] } as cons
   .rate span { display: grid; place-items: center; font-size: calc(9.5 * var(--pt)); }
   .rate span + span { border-left: 1px solid #ccc; }
 
+  /* Pie de página: regla negra de 1,5 pt, leyenda de valoraciones y número de página */
+  .pfoot {
+    position: absolute; left: calc(28 * var(--pt)); right: calc(28 * var(--pt)); top: calc(610 * var(--pt));
+    border-top: calc(1.5 * var(--pt)) solid #000; padding-top: calc(8 * var(--pt));
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .pfoot i { font-family: var(--sans); font-size: calc(9 * var(--pt)); font-weight: 500; color: #595959; }
+  .pfoot b { font-family: var(--mono); font-size: calc(10 * var(--pt)); }
+
   /* Tinta: cada ventana se descubre de izquierda a derecha, como si se escribiera.
      Los ✓ verdes aparecen desde abajo a la izquierda, que es como se trazan. */
   .ink {
@@ -178,13 +190,13 @@ const timing = { blue: [0, 0.9], green: [0.75, 0.45], red: [0.75, 0.6] } as cons
   }
 
   figcaption {
-    display: flex; justify-content: space-between; gap: 16px; margin-top: 18px;
-    font-family: var(--mono); font-size: 12px; color: var(--graphite);
+    display: flex; justify-content: space-between; gap: 16px; margin-top: 16px;
+    font-size: 13px; color: var(--ink); /* va encima de la franja de colores: negro, no gris */
   }
   .replay {
     align-self: flex-start; white-space: nowrap; cursor: pointer;
     background: none; border: 0; border-bottom: 1px solid currentColor; padding: 0;
-    font-family: var(--mono); font-size: 12px; color: var(--ink);
+    font-size: 13px; font-weight: 600; color: var(--ink);
   }
 
   @media (prefers-reduced-motion: reduce) {

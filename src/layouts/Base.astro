@@ -1,6 +1,5 @@
 ---
 // Esqueleto común de todas las páginas: <head> con todo lo de SEO y la carga de fuentes.
-import { Font } from 'astro:assets';
 import '../styles/global.css';
 import { APP_STORE_URL } from '../i18n/en';
 import { LANGS, DEFAULT_LANG, OG_LOCALES, localizedPath, type Lang } from '../i18n';
@@ -63,9 +62,6 @@ const structuredData = {
     <meta name="google-site-verification" content="9t0nxeqr7D9IYAQOzOiTzRLVNNFMM1guQQhSAucfIc4" />
 
     <!-- Fuentes servidas desde la web; precargamos las que se ven nada más entrar -->
-    <Font cssVariable="--font-serif" preload />
-    <Font cssVariable="--font-sans" preload />
-    <Font cssVariable="--font-mono" />
 
     <!-- Vista previa al compartir el enlace (WhatsApp, Reddit, X, Discord…) -->
     <meta property="og:type" content="website" />

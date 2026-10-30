@@ -82,6 +82,7 @@ const fr: Texts = {
   features: {
     label: "Dans l'appli",
     title: 'Tout pour une<br><em>habitude quotidienne sur papier.</em>',
+    note: 'Écrivez la traduction de chaque mot sur les pages suivantes, puis évaluez chaque fiche dans l’app.',
     items: [
       { title: '22 langues', text: 'Des objectifs avec votre niveau et une limite quotidienne de nouvelles fiches et de révisions.' },
       { title: 'Paquets par thème', text: 'Verbes irréguliers, phrasal verbs, kanji, grammaire : un paquet pour chaque point que vous travaillez.' },

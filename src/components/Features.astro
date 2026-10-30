@@ -1,36 +1,106 @@
 ---
-// «Inside the app»: un índice impreso, con reglas en vez de tarjetas.
-import SectionHead from './SectionHead.astro';
-
+// «Inside the app»: la sección es la portada de sesión del PDF combinado (SessionCoverPageView):
+// barra superior con regla de 2 pt, título grande en serif, ficha en columnas separada por
+// filetes finos y, abajo, la frase de pie de la portada real. Los filetes se trazan al llegar.
 interface Props {
-  t: { label: string; title: string; items: { title: string; text: string }[] };
+  t: { label: string; title: string; note: string; items: { title: string; text: string }[] };
 }
 const { t } = Astro.props;
 ---
 
 <section class="features" id="features">
   <div class="wrap">
-    <SectionHead number={4} label={t.label} title={t.title} />
-    <ol class="index">
-      {t.items.map((item, i) => (
-        <li>
-          <span class="n mono">{String(i + 1).padStart(2, '0')}</span>
-          <h3>{item.title}</h3>
-          <p>{item.text}</p>
-        </li>
-      ))}
-    </ol>
+    <article class="cover" data-cover>
+      <header class="top">
+        <span class="brand">Tobokachi</span>
+        <span class="running">{t.label}</span>
+      </header>
+      <h2 set:html={t.title} />
+      <ul class="facts">
+        {t.items.map((item, i) => (
+          <li style={`--i: ${i}`}>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="foot">{t.note}</p>
+    </article>
   </div>
 </section>
 
-<style>
-  .features { background: var(--paper); border-top: 2px solid var(--ink); padding: 96px 0 104px; }
-  .index { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 40px; row-gap: 8px; }
-  li { border-top: 1.5px solid var(--ink); padding: 16px 0 30px; }
-  .n { display: block; font-weight: 700; font-size: 12px; color: var(--graphite); margin-bottom: 18px; }
-  h3 { font-family: var(--serif); font-weight: 700; font-size: 24px; line-height: 1.15; margin-bottom: 8px; }
-  p { font-size: 16px; line-height: 1.55; color: var(--text); max-width: 26em; }
+<script>
+  // Los filetes de la ficha se trazan de izquierda a derecha cuando la portada entra en pantalla
+  for (const cover of document.querySelectorAll<HTMLElement>('[data-cover]')) {
+    if (document.documentElement.hasAttribute('data-static')) continue;
+    cover.classList.add('live');
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (entries[0].isIntersecting) {
+          cover.classList.add('drawn');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    ).observe(cover);
+  }
+</script>
 
-  @media (max-width: 900px) { .index { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .index { grid-template-columns: 1fr; } li { padding-bottom: 22px; } }
+<style>
+  .features { border-top: 2px solid var(--ink); padding: 112px 0; }
+
+  /* La hoja de portada: papel blanco con la misma sombra que la hoja de la portada de la web */
+  .cover {
+    max-width: 1040px; margin: 0 auto; padding: 44px 56px 36px; background: var(--paper);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 22px 44px -16px rgba(0, 0, 0, 0.3);
+  }
+  .top {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding-bottom: 10px; border-bottom: 2px solid var(--ink);
+  }
+  .brand { font-family: var(--serif); font-weight: 700; font-size: 16px; }
+  .running { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  h2 {
+    margin: 64px 0 44px; font-family: var(--serif); font-weight: 700;
+    font-size: clamp(38px, 5vw, 60px); line-height: 1; letter-spacing: -0.025em; text-wrap: balance;
+  }
+  h2 :global(em) { font-style: normal; color: var(--graphite); }
+
+  /* Ficha en tres columnas: los filetes cruzan la hoja entera, como en la portada del PDF */
+  .facts { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid #9e9e9e; }
+  .facts li { position: relative; padding: 18px 28px 22px 0; }
+  .facts li::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: #9e9e9e;
+    transform-origin: left;
+  }
+  h3 { font-family: var(--serif); font-weight: 700; font-size: 20px; line-height: 1.2; margin-bottom: 6px; }
+  .facts p { font-size: 15px; line-height: 1.5; color: var(--text); }
+
+  .foot {
+    margin-top: 72px; padding-top: 8px; border-top: 1px solid var(--ink);
+    font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--graphite);
+  }
+
+  .cover:global(.live) li::before { transform: scaleX(0); }
+  .cover:global(.drawn) li::before {
+    transform: scaleX(1);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 0.06s);
+  }
+
+  @media (max-width: 900px) {
+    .features { padding: 88px 0; }
+    .cover { padding: 32px 28px 28px; }
+    .facts { grid-template-columns: repeat(2, 1fr); }
+    h2 { margin: 48px 0 32px; }
+  }
+  @media (max-width: 560px) {
+    .cover { padding: 24px 18px; }
+    .facts { grid-template-columns: 1fr; }
+    .facts li { padding-right: 0; }
+    .foot { margin-top: 48px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cover:global(.live) li::before { transform: none; transition: none; }
+  }
 </style>

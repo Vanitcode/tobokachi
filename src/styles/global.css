@@ -1,22 +1,30 @@
-/* ── Tokens del estilo «Hoja de estudio» ───────────────────────────────────
-   Salen del PDF que genera la app: papel blanco, tinta negra, pautas grises
-   y los tres bolis con los que se corrige la hoja. */
+/* ── Tokens: «la hoja es el sistema» ──────────────────────────────────────
+   Todo sale del PDF que genera la app (SimpleCardPracticePageView.swift):
+   papel blanco, tinta negra, las fuentes del sistema de Apple y los cuatro
+   colores con los que la app pinta cada valoración (tintColor).
+   Si cambia el diseño del PDF, hay que cambiar estos valores. */
 :root {
-  --desk: #ECECE8;      /* fondo: un escritorio gris neutro */
   --paper: #FFFFFF;
-  --ink: #141414;
-  --graphite: #5B5B57;  /* texto secundario */
-  --text: #3A3A37;      /* texto de párrafos */
-  --rule: #CFCFCA;      /* pautas y separadores suaves */
+  --ink: #000000;
+  --graphite: #595959;  /* etiquetas del PDF (#595959) */
+  --text: #2B2B2B;      /* texto de párrafos */
+  --rule: #999999;      /* pautas de respuesta del PDF */
   --dash: #888888;      /* línea discontinua de las tarjetas */
   --pen-blue: #2457D6;
   --pen-green: #1E9E5A;
   --pen-red: #E0412F;
 
-  /* Las variables --font-* las define Astro (astro.config.mjs → fonts) */
-  --serif: var(--font-serif);
-  --sans: var(--font-sans);
-  --mono: var(--font-mono);
+  /* Valoraciones (FSRSRating.tintColor en la app) */
+  --again: #F0997B;     /* 🫠 No lo recuerdo */
+  --hard: #FAC775;      /* 🤔 Difícil */
+  --good: #C0DD97;      /* 😌 Bien */
+  --easy: #5DCAA5;      /* 🤩 Perfecto */
+
+  /* Las mismas fuentes que el PDF: .serif = New York, .default = SF Pro, .monospaced = SF Mono.
+     En Safari (iPhone, iPad, Mac) son exactamente esas; en otros sistemas, las más parecidas. */
+  --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --radius: 6px;        /* el mismo radio que las tarjetas del PDF */
   --max: 1200px;
@@ -28,7 +36,7 @@
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-  background: var(--desk);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   line-height: 1.5;
@@ -61,6 +69,7 @@ button { font: inherit; color: inherit; }
 }
 
 :focus-visible { outline: 2px solid var(--pen-blue); outline-offset: 3px; }
+::selection { background: var(--hard); color: var(--ink); }
 
 /* Modo captura (#static): sin animaciones ni transiciones */
 [data-static] *, [data-static] *::before, [data-static] *::after {

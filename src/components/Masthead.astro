@@ -58,12 +58,10 @@ const { t, lang, route } = Astro.props;
   .facts div { text-align: right; }
   .facts dd { font-size: 14px; font-weight: 700; margin-top: 2px; }
   nav { display: flex; gap: 20px; }
-  nav a {
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
-    text-decoration: none; color: var(--graphite);
-  }
+  nav a { font-size: 14px; font-weight: 500; text-decoration: none; color: var(--graphite); }
   nav a:hover { color: var(--ink); }
-  .langs { gap: 10px; }
+  .langs { gap: 12px; }
+  .langs a { font-family: var(--mono); font-size: 13px; }
   .langs a[aria-current] { color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-color: var(--pen-blue); text-underline-offset: 4px; }
   hr { height: 2px; border: 0; background: var(--ink); }
 

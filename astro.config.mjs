@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
@@ -20,32 +20,6 @@ export default defineConfig({
     }),
   ],
 
-  // Las tipografías se descargan al compilar y se sirven desde la propia web:
-  // más rápido y sin mandar datos de los visitantes a Google Fonts.
-  fonts: [
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Newsreader',
-      cssVariable: '--font-serif',
-      weights: ['300 800'],
-      styles: ['normal', 'italic'],
-      fallbacks: ['Georgia', 'serif'],
-    },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Geist',
-      cssVariable: '--font-sans',
-      weights: ['300 700'],
-      styles: ['normal'],
-      fallbacks: ['Helvetica Neue', 'Arial', 'sans-serif'],
-    },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Geist Mono',
-      cssVariable: '--font-mono',
-      weights: ['400 700'],
-      styles: ['normal'],
-      fallbacks: ['Menlo', 'monospace'],
-    },
-  ],
+  // Sin tipografías descargadas: la web usa las mismas fuentes del sistema de Apple que el PDF
+  // de la app (New York, SF Pro, SF Mono). Ver src/styles/global.css.
 });
