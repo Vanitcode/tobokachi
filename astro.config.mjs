@@ -4,10 +4,9 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // La web vive en https://vanitcode.github.io/tobokachi/ (GitHub Pages de un repositorio).
-  // Si algún día hay dominio propio: site = 'https://tobokachi.app' y se borra `base`.
-  site: 'https://vanitcode.github.io',
-  base: '/tobokachi',
+  // La web vive en la raíz de su propio dominio (GitHub Pages con dominio personalizado).
+  // La dirección antigua, https://vanitcode.github.io/tobokachi/, redirige aquí.
+  site: 'https://tobokachi.app',
   // GitHub Pages sirve cada página como carpeta (…/support/): así no hay dos URL para lo mismo
   trailingSlash: 'always',
 

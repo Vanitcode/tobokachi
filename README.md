@@ -1,7 +1,7 @@
 # Tobokachi web
 
 Web de producto de [Tobokachi](https://apps.apple.com/app/id6801584392), hecha con Astro.
-Se publica en https://vanitcode.github.io/tobokachi/
+Se publica en https://tobokachi.app/
 
 ## Trabajar en local
 

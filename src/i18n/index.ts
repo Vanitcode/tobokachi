@@ -1,5 +1,5 @@
 // Idiomas de la web y utilidades para construir enlaces en cada uno.
-// El inglés vive en la raíz (/tobokachi/) y el resto en una subcarpeta (/tobokachi/es/…).
+// El inglés vive en la raíz (/) y el resto en una subcarpeta (/es/…).
 import en from './en';
 import es from './es';
 import de from './de';
@@ -34,7 +34,7 @@ export const getTexts = (lang: Lang) => TEXTS[lang];
 
 /**
  * Ruta de una página en un idioma. `route` es la página sin idioma: '' (portada),
- * 'support/' o 'privacy/'. Ejemplo: localizedPath('es', 'support/') → '/tobokachi/es/support/'
+ * 'support/' o 'privacy/'. Ejemplo: localizedPath('es', 'support/') → '/es/support/'
  */
 export function localizedPath(lang: Lang, route = ''): string {
   const prefix = lang === DEFAULT_LANG ? '' : `${lang}/`;

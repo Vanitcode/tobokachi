@@ -1,5 +1,5 @@
-// La web no está en la raíz del dominio sino en /tobokachi/, así que todos los
-// enlaces internos y archivos de public/ tienen que llevar ese prefijo (BASE_URL).
+// Antepone BASE_URL a los enlaces internos y archivos de public/. Hoy la web vive en la
+// raíz (BASE_URL = '/'), pero así sigue funcionando si algún día vuelve a una subcarpeta.
 export function withBase(path = ''): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   return `${base}/${path.replace(/^\//, '')}`;

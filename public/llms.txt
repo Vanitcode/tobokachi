@@ -45,8 +45,8 @@ Tobokachi is a language-learning flashcard app built around one idea: spaced rep
 
 ## Links
 
-- Website: https://vanitcode.github.io/tobokachi/
+- Website: https://tobokachi.app/
 - App Store: https://apps.apple.com/app/id6801584392
-- Support: https://vanitcode.github.io/tobokachi/support/
-- Privacy policy: https://vanitcode.github.io/tobokachi/privacy/
+- Support: https://tobokachi.app/support/
+- Privacy policy: https://tobokachi.app/privacy/
 - Contact: vanitcode@icloud.com
